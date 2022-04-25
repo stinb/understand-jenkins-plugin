@@ -1,12 +1,19 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:entry title="${%Name}" field="name">
+    <f:entry title="${%Project}" field="dbName">
         <f:textbox />
     </f:entry>
-    <f:advanced>
-        <f:entry title="${%French}" field="useFrench"
-                 description="${%FrenchDescr}">
-            <f:checkbox />
+    <f:optionalBlock inline="true" name="newDb" title="${%New}" checked="${instance.newDb}">
+        <f:entry title="${%Source}" field="src">
+            <f:textbox />
         </f:entry>
-    </f:advanced>
+    </f:optionalBlock>
+    <f:optionalBlock inline="true" name="codecheck" title="CodeCheck" checked="${instance.codecheck}">
+        <f:entry title="${%Config}" field="config">
+            <f:textbox />
+        </f:entry>
+    </f:optionalBlock>
+    <f:entry title="${%Metrics}" field="metrics">
+        <f:checkbox />
+    </f:entry>
 </j:jelly>

@@ -21,50 +21,106 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class UndBuilder extends Builder implements SimpleBuildStep {
 
-    private final String name;
-    private boolean useFrench;
+    private final String dbName;
+    private String src;
+    private String config;
+    private boolean newDb;
+    private boolean codecheck;
+    private boolean metrics;
 
     @DataBoundConstructor
-    public UndBuilder(String name) {
-        this.name = name;
+    public UndBuilder(String dbName) {
+        this.dbName = dbName;
     }
 
-    public String getName() {
-        return name;
+    public String getDbName() {
+        return dbName;
     }
 
-    public boolean isUseFrench() {
-        return useFrench;
+    public boolean isNewDb() {
+        return newDb;
     }
 
     @DataBoundSetter
-    public void setUseFrench(boolean useFrench) {
-        this.useFrench = useFrench;
+    public void setNewDb(boolean newDb) {
+        this.newDb = newDb;
+    }
+    
+    public String getSrc() {
+        return src;
+    }
+    
+    @DataBoundSetter
+    public void setSrc(String src) {
+        this.src = src;
+    }
+    
+    public boolean isCodecheck() {
+        return codecheck;
+    }
+
+    @DataBoundSetter
+    public void setCodecheck(boolean codecheck) {
+        this.codecheck = codecheck;
+    }
+    
+    public String getConfig() {
+        return config;
+    }
+
+    @DataBoundSetter
+    public void setConfig(String config) {
+        this.config = config;
+    }
+    
+    public boolean isMetrics() {
+        return metrics;
+    }
+
+    @DataBoundSetter
+    public void setMetrics(boolean metrics) {
+        this.metrics = metrics;
     }
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-    	//run.addAction(new HelloWorldAction(name));
-    	if (useFrench) {
-            listener.getLogger().println("Bonjour, " + name + "!");
-        } else {
-            listener.getLogger().println("Hello, " + name + "!");
+        listener.getLogger().print(UndGlobalConfiguration.get().getPath() + "und");
+        listener.getLogger().print(" -db " + dbName);
+    	if (newDb) {
+            listener.getLogger().print(" create add " + src);
+        } 
+        listener.getLogger().print(" analyze");
+        if (codecheck) {
+            listener.getLogger().print(" codecheck " + config);
         }
+        if (metrics) {
+            listener.getLogger().print(" export metrics");
+        }
+        listener.getLogger().print("\n");
     }
 
     @Symbol("greet")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
+        public FormValidation doCheckDbName(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error(Messages.UndBuilder_DescriptorImpl_errors_missingName());
-            if (value.length() < 4)
-                return FormValidation.warning(Messages.UndBuilder_DescriptorImpl_warnings_tooShort());
-            if (!useFrench && value.matches(".*[éáàç].*")) {
-                return FormValidation.warning(Messages.UndBuilder_DescriptorImpl_warnings_reallyFrench());
-            }
+            return FormValidation.ok();
+        }
+        
+        public FormValidation doCheckSrc(@QueryParameter String value, @QueryParameter boolean newDb)
+                throws IOException, ServletException {
+            if (value.length() == 0 && newDb)
+                return FormValidation.error(Messages.UndBuilder_DescriptorImpl_errors_missingSrc());
+            return FormValidation.ok();
+        }
+        
+        public FormValidation doCheckConfig(@QueryParameter String value, @QueryParameter boolean codecheck)
+                throws IOException, ServletException {
+            if (codecheck && value.length() == 0)
+                return FormValidation.error(Messages.UndBuilder_DescriptorImpl_errors_missingConfig());
             return FormValidation.ok();
         }
 
