@@ -1,5 +1,6 @@
-package io.jenkins.plugins.sample;
+package io.jenkins.plugins.understand;
 
+import io.jenkins.plugins.understand.UndGlobalConfiguration;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.junit.Test;
@@ -7,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.jvnet.hudson.test.JenkinsSessionRule;
 
-public class SampleConfigurationTest {
+public class UndGlobalConfigurationTest {
 
     @Rule
     public JenkinsSessionRule sessions = new JenkinsSessionRule();
@@ -24,15 +25,15 @@ public class SampleConfigurationTest {
     @Test
     public void uiAndStorage() throws Throwable {
         sessions.then(r -> {
-            assertNull("not set initially", SampleConfiguration.get().getLabel());
+            assertNull("not set initially", UndGlobalConfiguration.get().getPath());
             HtmlForm config = r.createWebClient().goTo("configure").getFormByName("config");
-            HtmlTextInput textbox = config.getInputByName("_.label");
+            HtmlTextInput textbox = config.getInputByName("_.path");
             textbox.setText("hello");
             r.submit(config);
-            assertEquals("global config page let us edit it", "hello", SampleConfiguration.get().getLabel());
+            assertEquals("global config page let us edit it", "hello", UndGlobalConfiguration.get().getPath());
         });
         sessions.then(r -> {
-            assertEquals("still there after restart of Jenkins", "hello", SampleConfiguration.get().getLabel());
+            assertEquals("still there after restart of Jenkins", "hello", UndGlobalConfiguration.get().getPath());
         });
     }
 
