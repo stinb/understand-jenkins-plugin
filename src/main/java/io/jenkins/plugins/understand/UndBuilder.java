@@ -5,11 +5,14 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.util.FormValidation;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.util.ArgumentListBuilder;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -84,22 +87,44 @@ public class UndBuilder extends Builder implements SimpleBuildStep {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        listener.getLogger().print(UndGlobalConfiguration.get().getPath() + "und");
-        listener.getLogger().print(" -db " + dbName);
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        String exeName = "und";
+        String exePath = UndGlobalConfiguration.get().getPath();
+        if (exePath != null && exePath.length() > 0) {
+            if (!exePath.endsWith("/") && !exePath.endsWith("\\")) {
+                if (launcher.isUnix()) {
+                    exePath += "/";
+                } else {
+                    exePath += "\\";
+                }
+            }
+            exeName = exePath + exeName;
+        }
+        args.add(exeName, "-db", dbName);
     	if (newDb) {
-            listener.getLogger().print(" create add " + src);
+            args.add("create","-languages", "all", "add",src);
         } 
-        listener.getLogger().print(" analyze");
+        args.add("analyze","-sarif","und_analyze.sarif");
         if (codecheck) {
-            listener.getLogger().print(" codecheck " + config);
+            args.add("codecheck","-sarif","und_cc.sarif",config,".");
         }
         if (metrics) {
-            listener.getLogger().print(" export metrics");
+            args.add("metrics");
         }
-        listener.getLogger().print("\n");
+        
+        int r;
+        if (run instanceof AbstractBuild) {
+            r = launcher.launch().cmds(args).envs(run.getEnvironment(listener))
+                    .stdout(listener).pwd(workspace).join();
+        } else {
+            r = launcher.launch().cmds(args).stdout(listener).pwd(workspace).join();
+        }
+        if (run != null && r != 0) {
+            run.setResult(Result.UNSTABLE);
+        }
     }
 
-    @Symbol("greet")
+    @Symbol("understand")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
