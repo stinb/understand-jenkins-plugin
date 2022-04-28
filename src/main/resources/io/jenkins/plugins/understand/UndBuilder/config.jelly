@@ -8,7 +8,7 @@
             <f:textbox />
         </f:entry>
     </f:optionalBlock>
-    <f:optionalBlock inline="true" name="codecheck" title="CodeCheck" checked="${instance.codecheck}">
+    <f:optionalBlock inline="true" name="codecheck" title="${%CodeCheck}" checked="${instance.codecheck}">
         <f:entry title="${%Config}" field="config">
             <f:textbox />
         </f:entry>
