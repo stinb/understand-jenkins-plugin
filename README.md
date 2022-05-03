@@ -2,14 +2,14 @@
 
 ## Introduction
 
-[Understand](https://www.scitools.com) is a static analysis tool that comes with many built-in code checks and the ability to write custom code checks. The plugin provides an easy interface to run Understand from Jenkins.
+[Understand](https://www.scitools.com) is a static analysis tool that comes with many built-in code checks and the ability to write your own custom code checks using Python or Perl. The plugin provides an easy interface to run Understand from Jenkins, creating and analyzing projects, inspecting your code for violations, and exporting useful metrics about your code. Violations can easily be sent to [Warnings Next Generation](https://plugins.jenkins.io/warnings-ng/) for easy reporting and issue tracking. 
 
 ## Getting started
 
 Understand must be installed on the machine that will run the Understand analysis. Make sure Understand is licensed for the Jenkins user. The license can be set through the command line with
 
 ```
-und -setlicensecode code
+und -setlicensecode 0123456ABCD
 ```
 
 If Understand is not on the system path, you can configure the path to Understand from Manage Jenkins -> Configure System:
@@ -45,17 +45,7 @@ steps {
 }
 ```    
 
-
-## Issues
-
-TODO Decide where you're going to host your issues, the default is Jenkins JIRA, but you can also enable GitHub issues,
-If you use GitHub issues there's no need for this section; else add the following line:
-
-Report issues and enhancements in the [Jenkins issue tracker](https://issues.jenkins-ci.org/).
-
 ## Contributing
-
-TODO review the default [CONTRIBUTING](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md) file and make sure it is appropriate for your plugin, if not then add your own one adapted from the base file
 
 Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
 
