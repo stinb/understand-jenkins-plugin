@@ -57,7 +57,7 @@ To import these results into the [Warnings Next Generation plugin](https://githu
 ![image](https://user-images.githubusercontent.com/6586272/166748080-b24d61ca-eee8-44f0-9278-3cd56de43124.png)
 
 ## Pipeline Projects
-Everything aboce can be done in the pipeline as well with the "understand" step. For example:
+Everything above can be done in the pipeline as well with the "understand" step. For example:
 
 ```
 steps {
