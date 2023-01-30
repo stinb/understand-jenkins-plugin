@@ -53,6 +53,8 @@ This plugin outputs several files into your workspace.
   * und_cc.sarif contains all of the violations found while running codecheck.
 
 ## Integrating With Warnings Next Generation 
+![image](https://user-images.githubusercontent.com/6586272/215613430-5a0cc048-6b74-4a3b-9e83-8a17004f1e09.png)
+
 To import these results into the [Warnings Next Generation plugin](https://github.com/jenkinsci/warnings-ng-plugin), create a new Post-build action of "Record compiler warnings and static analysis results".  You will need to add a second tool, one for project setup issues and one for codecheck violations, and make sure each tool has a unique custom id.
 ![image](https://user-images.githubusercontent.com/6586272/166748080-b24d61ca-eee8-44f0-9278-3cd56de43124.png)
 
